@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.src.database.base import engine
 from backend.src.database.models import Base
 from backend.src.routes.topics import topics_router
+from backend.src.routes.counts import counts_router
 
 from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
@@ -26,6 +27,7 @@ app.add_middleware(
 
 # Add the routers
 app.include_router(topics_router, tags=["topics"])
+app.include_router(counts_router, tags=["counts"])
 
 # Endpoints
 @app.get("/health")
