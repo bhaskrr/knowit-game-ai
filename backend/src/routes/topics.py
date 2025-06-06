@@ -1,7 +1,7 @@
 from fastapi import Depends
 from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
-from backend.src.database.models import Topic
+from backend.src.database.models import Topic, Question
 from backend.src.database.crud import get_db
 from backend.src.database.schemas import TopicResponse
 from typing import List
@@ -40,4 +40,15 @@ def get_topics(db: Session = Depends(get_db)):
         List[TopicResponse]: A list of all topics as response models.
     """
     topics = db.query(Topic).all()
-    return topics
+    results = [
+        {
+            "id": topic.id,
+            "name": topic.name,
+            "description": topic.description,
+            "question_count": db.query(Question)
+            .filter(Question.topic_id == topic.id)
+            .count(),
+        }
+        for topic in topics
+    ]
+    return results
