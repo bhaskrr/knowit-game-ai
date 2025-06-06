@@ -41,8 +41,3 @@ def get_topics(db: Session = Depends(get_db)):
     """
     topics = db.query(Topic).all()
     return topics
-
-@topics_router.get("/topics/count")
-def get_topic_count(db: Session = Depends(get_db)):
-    count = db.query(Topic).count()
-    return {"total_topics": count}
