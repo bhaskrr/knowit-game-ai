@@ -1,9 +1,10 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from fastapi.routing import APIRouter
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from backend.src.database.models import Topic, Question
 from backend.src.database.crud import get_db
-from backend.src.database.schemas import TopicResponse
+from backend.src.database.schemas import TopicResponse, QuestionResponse
 from typing import List
 
 # Create a new APIRouter instance for topic-related endpoints
@@ -52,3 +53,43 @@ def get_topics(db: Session = Depends(get_db)):
         for topic in topics
     ]
     return results
+
+@topics_router.get("/topics/{topic_id}/trivia", response_model= List[QuestionResponse])
+def get_trivia_questions(topic_id: int, limit: int = 5, db: Session = Depends(get_db)):
+    """Retrieve a specified number of random questions for a topic
+    
+    Args:
+        topic_id (int): id of the topic
+        limit (int): number of questions to fetch
+        db (Session): SQLAlchemy database session (injected by FastAPI).
+    
+    Returns:
+        A list of questions with 
+    """
+    topic = db.query(Topic).filter_by(id=topic_id).first()
+    if not topic:
+        raise HTTPException(status_code=404, detail="Topic not found!")
+
+    questions = (
+        db.query(Question)
+        .filter_by(topic_id=topic_id)
+        .order_by(func.random())
+        .limit(limit)
+        .all()
+    )
+
+    return [
+        {
+            "id": q.id,
+            "text": q.question_text,
+            "options": [
+                {
+                    "id": opt.id,
+                    "text": opt.option_text,
+                    "is_correct": opt.is_correct,
+                }
+                for opt in q.options
+            ],
+        }
+        for q in questions
+    ]
