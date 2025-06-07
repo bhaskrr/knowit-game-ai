@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { CircleHelp } from "lucide-react";
 
 interface Category {
+  id: number,
   name: string;
   question_count: number;
   description: string;
@@ -23,15 +25,15 @@ export function CategoryCard(category: Category) {
         </span>
       </p>
       <p className="mt-4 text-gray-500 text-base">{category.description}</p>
-      <a
+      <Link
+        href={`/categories/${category.id}`}
         className="mt-6 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 shadow-lg hover:from-purple-600 hover:to-blue-600 transition focus:outline-none focus:ring-2 focus:ring-purple-400"
-        href="#"
       >
         Explore
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
-      </a>
+      </Link>
       <div className="absolute -top-8 -right-8 w-32 h-32 bg-purple-100 rounded-full opacity-30 group-hover:scale-110 transition-transform duration-300"></div>
     </div>
   );
