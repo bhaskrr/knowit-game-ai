@@ -24,3 +24,6 @@ class QuestionResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+class TopicGenerationInput(BaseModel):
+    name: str
