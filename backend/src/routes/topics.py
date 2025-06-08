@@ -4,7 +4,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from backend.src.database.models import Topic, Question
 from backend.src.database.crud import get_db
-from backend.src.database.schemas import TopicResponse, QuestionResponse
+from backend.src.utils.schemas import TopicResponse, QuestionResponse
 from typing import List
 
 # Create a new APIRouter instance for topic-related endpoints
