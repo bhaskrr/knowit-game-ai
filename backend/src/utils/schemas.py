@@ -25,5 +25,5 @@ class QuestionResponse(BaseModel):
     class Config:
         from_attributes = True
 
-class TopicGenerationInput(BaseModel):
+class TriviaGenerationInput(BaseModel):
     name: str
