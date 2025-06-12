@@ -6,6 +6,7 @@ from backend.src.database.models import Base
 from backend.src.routes.topics import topics_router
 from backend.src.routes.counts import counts_router
 from backend.src.utils.forbidden_words import refresh_forbidden_words
+from backend.src.utils.reserved_words import refresh_reserved_words
 
 from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
@@ -40,7 +41,7 @@ def health_check():
     return {"status": "ok", "message": "API is running"}
 
 
-@app.post("/refresh-forbidden-words")
+@app.post("/refresh-words-cache")
 def trigger_refresh(request: Request):
     # Check the API key from headers
     api_key = request.headers.get("x-api-key")
@@ -48,6 +49,7 @@ def trigger_refresh(request: Request):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized"
         )
-
+    # Refresh cache
     refresh_forbidden_words()
-    return {"message": "Forbidden words list refreshed successfully."}
+    refresh_reserved_words()
+    return {"message": "Cached word lists refreshed successfully."}
