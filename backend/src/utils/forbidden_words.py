@@ -15,9 +15,9 @@ def get_forbidden_words() -> List[str]:
     if _cached_forbidden_words:
         return _cached_forbidden_words
 
-    URL = os.environ.get("FORBIDDEN_WORDS_URL", "")
+    URL = os.environ.get("WORDS_URL", "")
     if not URL:
-        raise RuntimeError("FORBIDDEN_WORDS_URL env variable not set.")
+        raise RuntimeError("WORDS_URL env variable not set.")
 
     with httpx.Client(timeout=5.0) as client:
         response = client.get(URL)
@@ -29,9 +29,9 @@ def get_forbidden_words() -> List[str]:
 def refresh_forbidden_words():
     global _cached_forbidden_words
 
-    URL = os.environ.get("FORBIDDEN_WORDS_URL", "")
+    URL = os.environ.get("WORDS_URL", "")
     if not URL:
-        raise RuntimeError("FORBIDDEN_WORDS_URL env variable not set.")
+        raise RuntimeError("WORDS_URL env variable not set.")
 
     with httpx.Client(timeout=5.0) as client:
         response = client.get(URL)
