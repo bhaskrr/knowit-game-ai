@@ -4,7 +4,8 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from backend.src.database.models import Topic, Question
 from backend.src.database.crud import get_db
-from backend.src.utils.schemas import TopicResponse, QuestionResponse
+from backend.src.utils.schemas import TopicResponse, QuestionResponse, TriviaGenerationInput
+from backend.src.services.ai_service import generate_trivia
 from typing import List
 
 # Create a new APIRouter instance for topic-related endpoints
@@ -93,3 +94,18 @@ def get_trivia_questions(topic_id: int, limit: int = 5, db: Session = Depends(ge
         }
         for q in questions
     ]
+
+@topics_router.post("/topics/generate")
+async def generate_topic(payload: TriviaGenerationInput):
+    # extract the topic name from the payload
+    topic_name = payload.name.strip()
+    
+    # Check if no name is specified
+    if not topic_name:
+        return {"Error": "Topic name can not be empty."}
+    
+    # function call to generate trivia
+    # ? for now, the number of questions to be generated is set to 5
+    # ? in future this can be taken as an input from the client
+    data = await generate_trivia({"topic": topic_name, "num_questions": 5})
+    return data
